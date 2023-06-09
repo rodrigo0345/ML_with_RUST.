@@ -30,18 +30,31 @@ fn cost(w: f32, training_data: &TrainingData) -> f64 {
     return result;
 }
 
+// coding the derivative
+// with finite difference
+// (only to learn)
+// a is the parameter of the algorithm
+// ex: y = x * a, a is the unknown parameter
+// h is the value to add, in order to find the stationary point
+fn derivate_u_finite_dif(a: f64, h: f64, training_data: &TrainingData) -> f64 {
+    let dcost = cost((a + h) as f32, &training_data) - cost(a as f32, &training_data) / (h as f64);
+    return a - dcost;
+}
+
 fn main() {
     let mut rand = rand::thread_rng();
 
     let mut w: f64 = rand.gen_range(0..10) as f64;
     let training_data = TrainingData::new();
 
-    let eps = 1e-5;
+    println!(
+        "before: {}, w value = {}",
+        cost(w as f32, &training_data),
+        w
+    );
 
-    // coding the derivative
-    // with finite difference
-    // (only to learn)
-    let dcost =
-        cost(w as f32 - eps, &training_data) - cost(w as f32, &training_data) / (eps as f64);
-    w -= dcost;
+    let eps = 1e-5;
+    let res = derivate_u_finite_dif(w, eps as f64, &training_data);
+
+    println!("after: {}", res);
 }
