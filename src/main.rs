@@ -18,6 +18,10 @@ impl TrainingData {
     }
 }
 
+// basicaly this is just
+// a perceptron
+// with only one weight
+// and bias = 0
 fn cost(w: f64, training_data: &TrainingData) -> f64 {
     let mut result: f64 = 0.0;
     training_data.to_owned().data.into_iter().for_each(|point| {
@@ -44,20 +48,20 @@ fn derivate_u_finite_dif(a: f64, h: f64, training_data: &TrainingData) -> f64 {
 fn main() {
     let mut rand = rand::thread_rng();
 
-    let mut w: f64 = rand.gen_range(0..10) as f64;
+    let mut w: f64 = rand.gen_range(0..40) as f64;
 
     let training_data = TrainingData::new();
 
     println!("before: {}, w value = {}", cost(w, &training_data), w);
 
     let eps = 1e-3;
-    let rate = 1e-3;
+    let rate = 1e-2;
 
-    for i in 0..100 {
+    for _ in 0..100 {
         let dcost = derivate_u_finite_dif(w, eps, &training_data);
 
         w -= dcost * rate;
-
-        println!("iter {}: {}", i, w);
     }
+
+    println!("w: {}", w);
 }
