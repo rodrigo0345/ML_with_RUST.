@@ -4,6 +4,9 @@ use rand::Rng;
 
 struct TrainingData {
     xor_data: Vec<Vec<f64>>,
+    or_data: Vec<Vec<f64>>,
+    and_data: Vec<Vec<f64>>,
+    nand_data: Vec<Vec<f64>>,
 }
 
 impl TrainingData {
@@ -11,6 +14,25 @@ impl TrainingData {
         TrainingData {
             xor_data: Vec::from([
                 Vec::from([0.0, 0.0, 0.0]),
+                Vec::from([1.0, 0.0, 1.0]),
+                Vec::from([0.0, 1.0, 1.0]),
+                Vec::from([1.0, 1.0, 0.0]),
+            ]),
+            or_data: Vec::from([
+                Vec::from([0.0, 0.0, 0.0]),
+                Vec::from([1.0, 0.0, 1.0]),
+                Vec::from([0.0, 1.0, 1.0]),
+                Vec::from([1.0, 1.0, 1.0]),
+            ]),
+            and_data: Vec::from([
+                Vec::from([0.0, 0.0, 0.0]),
+                Vec::from([0.3, 0.0, 0.0]),
+                Vec::from([1.0, 0.0, 0.0]),
+                Vec::from([0.0, 1.0, 0.0]),
+                Vec::from([1.0, 1.0, 1.0]),
+            ]),
+            nand_data: Vec::from([
+                Vec::from([0.0, 0.0, 1.0]),
                 Vec::from([1.0, 0.0, 1.0]),
                 Vec::from([0.0, 1.0, 1.0]),
                 Vec::from([1.0, 1.0, 0.0]),
@@ -148,7 +170,7 @@ fn cost(m: Xor, data: &Vec<Vec<f64>>) -> f64 {
 
 pub fn xor_model() {
     let td = TrainingData::new();
-    let data = td.xor_data;
+    let data = td.nand_data;
 
     let mut xor = Xor::new_random();
 
@@ -159,8 +181,14 @@ pub fn xor_model() {
         let c = cost(xor, &data);
         let dif = xor.finite_diff(c, eps, &data);
         let fin = xor.learn(dif, rate);
-        println!("cost: {:?}", cost(fin, &data));
-        println!("-------------------------");
         xor = fin;
+    }
+
+    println!("cost: {:?}", cost(xor, &data));
+
+    for i in 0..2 {
+        for j in 0..2 {
+            println!("{} xor {} = {}", i, j, xor.forward(i as f64, j as f64));
+        }
     }
 }
