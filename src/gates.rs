@@ -12,7 +12,6 @@ impl TrainingData {
         TrainingData {
             or_data: Vec::from([
                 Vec::from([0.0, 0.0, 0.0]),
-                Vec::from([0.3, 0.0, 1.0]),
                 Vec::from([1.0, 0.0, 1.0]),
                 Vec::from([0.0, 1.0, 1.0]),
                 Vec::from([1.0, 1.0, 1.0]),
