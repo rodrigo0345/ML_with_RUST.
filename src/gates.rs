@@ -1,3 +1,5 @@
+use std::intrinsics::expf64;
+
 use rand::Rng;
 
 #[derive(Debug, Clone)]
@@ -23,6 +25,10 @@ impl TrainingData {
             ]),
         }
     }
+}
+
+fn sigmoid_float(x: f64) -> f64 {
+    return 1.0 / (1.0 - (-x).exp()) as f64;
 }
 
 fn cost(w: Vec<f64>, training_data: &Vec<Vec<f64>>) -> f64 {
