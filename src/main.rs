@@ -9,10 +9,11 @@ impl TrainingData {
     fn new() -> TrainingData {
         TrainingData {
             data: Vec::from([
+                Vec::from([0.0, 0.0]),
+                Vec::from([1.0, 2.0]),
+                Vec::from([2.0, 4.0]),
                 Vec::from([3.0, 6.0]),
                 Vec::from([4.0, 8.0]),
-                Vec::from([5.0, 10.0]),
-                Vec::from([6.0, 12.0]),
             ]),
         }
     }
@@ -25,7 +26,7 @@ impl TrainingData {
 fn cost(w: f64, b: f64, training_data: &TrainingData) -> f64 {
     let mut result: f64 = 0.0;
     training_data.to_owned().data.into_iter().for_each(|point| {
-        let y = point.get(0).unwrap() * w;
+        let y = point.get(0).unwrap() * w + b;
         let d = y - point.get(1).unwrap();
         result += d.powi(2) as f64;
     });
@@ -33,38 +34,40 @@ fn cost(w: f64, b: f64, training_data: &TrainingData) -> f64 {
     return result;
 }
 
-// coding the derivative
-// with finite difference
-// (only to learn)
-// a is the parameter of the algorithm
-// ex: y = x * a, a is the unknown parameter
-// h is the value to add, in order to find the stationary point
-fn derivate_u_finite_dif(a: f64, b: f64, h: f64, training_data: &TrainingData) -> f64 {
-    let dcost = (cost(a + h, b, training_data) - cost(a, b, training_data)) / h;
-
-    return dcost;
-}
-
 fn main() {
     let mut rand = rand::thread_rng();
 
-    let mut w: f64 = rand.gen_range(0..40) as f64;
-    let mut b: f64 = rand.gen_range(0..10) as f64;
+    let mut w: f64 = rand.gen_range(1..5) as f64;
+    let mut b: f64 = rand.gen_range(0..5) as f64;
 
     let training_data = TrainingData::new();
 
-    println!("before: {}, w value = {}", cost(w, 0.0, &training_data), w);
+    println!(
+        "before: {}, w value = {}, b value = {}",
+        cost(w, b, &training_data),
+        w,
+        b
+    );
 
     let eps = 1e-3;
     let rate = 1e-2;
 
-    for _ in 0..100 {
-        let dweight = derivate_u_finite_dif(w, b, eps, &training_data);
-        let dbias = derivate_u_finite_dif(w - eps, b + eps, eps, &training_data);
+    let mut error: f64 = 10.0;
+    while error > 0.00005 {
+        //for _ in 0..100 {
+        let c = cost(w, b, &training_data);
+        let dweight = (cost(w + eps, b, &training_data) - c) / eps;
+        let dbias = (cost(w, b + eps, &training_data) - c) / eps;
 
         w -= dweight * rate;
         b -= dbias * rate;
+        error = cost(w, b, &training_data);
     }
 
-    println!("after: {}, w value = {}", cost(w, 0.0, &training_data), w);
+    println!(
+        "after: {}, w value = {}, b value = {}",
+        cost(w, b, &training_data),
+        w,
+        b
+    );
 }
