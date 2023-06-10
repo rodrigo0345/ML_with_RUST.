@@ -80,9 +80,10 @@ pub fn gates() {
     }
 
     println!(
-        "w1: {}, w2: {}, cost: {}",
+        "w1: {}, w2: {}, b: {}, cost: {}",
         w1,
         w2,
+        b,
         cost(Vec::from([w1, w2]), b, data)
     );
 
@@ -91,7 +92,7 @@ pub fn gates() {
             "{} | {} = {}, expected: {}",
             point[0],
             point[1],
-            sigmoid_float(point[0] * w1 + point[1] * w2),
+            sigmoid_float(point[0] * w1 + point[1] * w2 + b),
             point[2]
         );
     });
