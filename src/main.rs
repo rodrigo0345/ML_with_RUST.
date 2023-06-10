@@ -9,10 +9,10 @@ impl TrainingData {
     fn new() -> TrainingData {
         TrainingData {
             data: Vec::from([
-                Vec::from([1.0, 2.0]),
-                Vec::from([2.0, 4.0]),
                 Vec::from([3.0, 6.0]),
                 Vec::from([4.0, 8.0]),
+                Vec::from([5.0, 10.0]),
+                Vec::from([6.0, 12.0]),
             ]),
         }
     }
@@ -39,8 +39,8 @@ fn cost(w: f64, b: f64, training_data: &TrainingData) -> f64 {
 // a is the parameter of the algorithm
 // ex: y = x * a, a is the unknown parameter
 // h is the value to add, in order to find the stationary point
-fn derivate_u_finite_dif(a: f64, h: f64, training_data: &TrainingData) -> f64 {
-    let dcost = (cost(a + h, 0.0, &training_data) - cost(a, 0.0, &training_data)) / h;
+fn derivate_u_finite_dif(a: f64, b: f64, h: f64, training_data: &TrainingData) -> f64 {
+    let dcost = (cost(a + h, b, training_data) - cost(a, b, training_data)) / h;
 
     return dcost;
 }
@@ -49,19 +49,22 @@ fn main() {
     let mut rand = rand::thread_rng();
 
     let mut w: f64 = rand.gen_range(0..40) as f64;
+    let mut b: f64 = rand.gen_range(0..10) as f64;
 
     let training_data = TrainingData::new();
 
-    println!("before: {}, w value = {}", cost(w, 0, &training_data), w);
+    println!("before: {}, w value = {}", cost(w, 0.0, &training_data), w);
 
     let eps = 1e-3;
     let rate = 1e-2;
 
     for _ in 0..100 {
-        let dcost = derivate_u_finite_dif(w, eps, &training_data);
+        let dweight = derivate_u_finite_dif(w, b, eps, &training_data);
+        let dbias = derivate_u_finite_dif(w - eps, b + eps, eps, &training_data);
 
-        w -= dcost * rate;
+        w -= dweight * rate;
+        b -= dbias * rate;
     }
 
-    println!("w: {}", w);
+    println!("after: {}, w value = {}", cost(w, 0.0, &training_data), w);
 }
