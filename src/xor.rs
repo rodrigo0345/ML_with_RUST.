@@ -170,7 +170,7 @@ fn cost(m: Xor, data: &Vec<Vec<f64>>) -> f64 {
 
 pub fn xor_model() {
     let td = TrainingData::new();
-    let data = td.nand_data;
+    let data = td.xor_data;
 
     let mut xor = Xor::new_random();
 
